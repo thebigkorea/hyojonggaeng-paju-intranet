@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>효종갱 파주점 일용직 근무내역</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+  background: #f3f5f8;
+  color: #222;
+}
+
+.wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  background: linear-gradient(135deg,#2b1d12,#7c2d12);
+  color: white;
+  padding: 24px;
+  border-radius: 0 0 24px 24px;
+  margin-bottom: 18px;
+  box-shadow: 0 6px 22px rgba(0,0,0,.16);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.header p {
+  margin: 8px 0 0;
+  color: rgba(255,255,255,.85);
+  font-size: 14px;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.summary-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px 10px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+.summary-card strong {
+  display: block;
+  font-size: 28px;
+  color: #7c2d12;
+}
+
+.summary-card span {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: #666;
+}
+
+label {
+  display: block;
+  font-weight: 700;
+  margin: 14px 0 6px;
+  font-size: 15px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 16px;
+  background: #fff;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.btn {
+  width: 100%;
+  border: 0;
+  border-radius: 14px;
+  padding: 15px;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 14px;
+}
+
+.btn-primary {
+  background: #7c2d12;
+  color: white;
+}
+
+.btn-dark {
+  background: #111827;
+  color: white;
+}
+
+.btn-light {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.result-item {
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 10px;
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+.result-item strong {
+  font-size: 17px;
+}
+
+.result-item p {
+  margin: 6px 0 0;
+  color: #4b5563;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.notice {
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 12px;
+  font-size: 14px;
+  display: none;
+}
+
+.notice.ok {
+  display: block;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.notice.err {
+  display: block;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.small {
+  color: #6b7280;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+@media (max-width: 520px) {
+  .wrap { padding: 14px; }
+  .row { grid-template-columns: 1fr; }
+  .summary { grid-template-columns: 1fr; }
+  .header h1 { font-size: 21px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>효종갱 파주점 일용직 근무내역</h1>
+  <p>성함 또는 전화번호로 기존 정보를 검색한 뒤 근무내역을 저장합니다.</p>
+</div>
+
+<div class="wrap">
+
+  <div class="summary">
+    <div class="summary-card">
+      <strong id="unpaidCount">0</strong>
+      <span>미지급 인원</span>
+    </div>
+
+    <div class="summary-card">
+      <strong id="todayCount">0</strong>
+      <span>오늘 등록</span>
+    </div>
+
+    <div class="summary-card">
+      <strong>파주</strong>
+      <span>효종갱</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>성함 또는 전화번호 검색</label>
+    <input id="keyword" type="text" placeholder="예: 손영임 또는 01012345678" />
+
+    <button class="btn btn-dark" type="button" onclick="searchWorker()">검색하기</button>
+
+    <div id="searchNotice" class="notice"></div>
+    <div id="resultBox"></div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <label>날짜</label>
+        <input id="date" type="date" />
+      </div>
+
+      <div>
+        <label>매장</label>
+        <input id="store" type="text" value="효종갱 파주점" readonly />
+      </div>
+    </div>
+
+    <label>성함</label>
+    <input id="name" type="text" placeholder="성함" />
+
+    <div class="row">
+      <div>
+        <label>수당</label>
+        <input id="allowance" type="number" placeholder="예: 120000" />
+      </div>
+
+      <div>
+        <label>업무</label>
+        <select id="job">
+          <option value="">선택</option>
+          <option value="홀">홀</option>
+          <option value="홀서빙">홀서빙</option>
+          <option value="설거지">설거지</option>
+          <option value="주방">주방</option>
+          <option value="전처리">전처리</option>
+          <option value="퇴식">퇴식</option>
+          <option value="기타">기타</option>
+        </select>
+      </div>
+    </div>
+
+    <label>주민번호</label>
+    <input id="rrn" type="text" inputmode="numeric" maxlength="14" placeholder="예: 610807-2057344" />
+
+    <div class="row">
+      
+      <div>
+        <label>전화번호</label>
+        <input id="phone" type="tel" inputmode="numeric" maxlength="13" placeholder="예: 010-9164-2554" />
+      </div>
+    </div>
+
+    <div>
+        <label>수취은행</label>
+        <input id="bank" type="text" placeholder="예: 하나은행" />
+      </div>
+
+
+    <label>계좌번호</label>
+    <input id="account" type="text" placeholder="계좌번호" />
+
+    <label>비고</label>
+    <textarea id="memo" placeholder="특이사항 입력"></textarea>
+
+    <label>지급여부</label>
+    <select id="payStatus">
+      <option value="미지급">미지급</option>
+      <option value="지급완료">지급완료</option>
+    </select>
+
+    <button id="saveBtn" class="btn btn-primary" type="button" onclick="saveDailyWorker()">저장하기</button>
+    <button id="updateBtn" class="btn btn-dark" type="button" onclick="updateDailyWorker()" style="display:none;">수정 저장</button>
+    <button class="btn btn-light" type="button" onclick="clearForm()">새 입력</button>
+
+    <div id="saveNotice" class="notice"></div>
+    <div class="small">
+      저장하면 효종갱 파주점 일용직 근무내역과 미지급 현황이 자동 갱신됩니다.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>최근 입력 내역</h3>
+
+    <div class="row">
+      <div>
+        <label>시작일</label>
+        <input id="listStartDate" type="date" />
+      </div>
+      <div>
+        <label>종료일</label>
+        <input id="listEndDate" type="date" />
+      </div>
+    </div>
+
+    <button id="searchListBtn" class="btn btn-dark" type="button" onclick="loadRecentWorkers()">기간 검색</button>
+    <div id="workerList" class="recent-list">불러오는 중...</div>
+  </div>
+
+</div>
+
+<script>
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbzd0mnTBJoopblcmgvZT6B27hrVrHWc-Ycorg8XYchzOqa859wufc_J5MZcGRN8hnLNrg/exec";
+
+let selectedRowNumber = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+  const today = new Date();
+  document.getElementById("date").value = today.toISOString().slice(0, 10);
+
+  document.getElementById("phone").addEventListener("input", function(){
+    this.value = formatPhone(this.value);
+  });
+
+  document.getElementById("rrn").addEventListener("input", function(){
+    this.value = formatRRN(this.value);
+  });
+
+  loadUnpaidCount();
+  loadTodayCount();
+  loadRecentWorkers();
+});
+
+function val(id){
+  return document.getElementById(id).value.trim();
+}
+
+function onlyNumber(value){
+  return String(value || "").replace(/[^0-9]/g, "");
+}
+
+function formatPhone(value){
+  const num = onlyNumber(value).slice(0,11);
+
+  if(num.length <= 3) return num;
+  if(num.length <= 7) return num.replace(/(\d{3})(\d+)/, "$1-$2");
+
+  return num.replace(/(\d{3})(\d{4})(\d{0,4})/, "$1-$2-$3");
+}
+
+function formatRRN(value){
+  const num = onlyNumber(value).slice(0,13);
+
+  if(num.length <= 6) return num;
+
+  return num.replace(/(\d{6})(\d{0,7})/, "$1-$2");
+}
+
+function showNotice(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = "notice " + type;
+  el.textContent = msg;
+}
+
+function clearNotice(id) {
+  const el = document.getElementById(id);
+  el.className = "notice";
+  el.textContent = "";
+}
+
+async function searchWorker() {
+  const keyword = val("keyword");
+  const resultBox = document.getElementById("resultBox");
+  resultBox.innerHTML = "";
+  clearNotice("searchNotice");
+
+  if (!keyword) {
+    showNotice("searchNotice", "err", "성함 또는 전화번호를 입력해주세요.");
+    return;
+  }
+
+  showNotice("searchNotice", "ok", "검색 중입니다...");
+
+  try {
+    const res = await fetch(API_URL + "?action=searchWorker&keyword=" + encodeURIComponent(keyword));
+    const json = await res.json();
+
+    resultBox.innerHTML = "";
+
+    if (!json.success || !json.data || json.data.length === 0) {
+      showNotice("searchNotice", "err", "기존 정보가 없습니다. 아래에 직접 입력해주세요.");
+      document.getElementById("name").value = keyword;
+      return;
+    }
+
+    showNotice("searchNotice", "ok", json.data.length + "건의 기존 정보를 찾았습니다.");
+
+    json.data.forEach(worker => {
+      const div = document.createElement("div");
+      div.className = "result-item";
+      div.innerHTML = `
+        <strong>${worker.name || ""} / ${formatPhone(worker.phone || "")}</strong>
+        <p>
+          은행: ${worker.bank || "-"}<br>
+          계좌: ${worker.account || "-"}<br>
+          최근업무: ${worker.lastJob || "-"} / 최근수당: ${worker.lastAllowance || "-"}
+        </p>
+      `;
+
+      div.onclick = () => {
+        const ok = confirm(
+          `${worker.name} 님의 기존 정보가 있습니다.\n\n` +
+          `전화번호: ${formatPhone(worker.phone || "")}\n` +
+          `은행: ${worker.bank || "-"}\n` +
+          `계좌: ${worker.account || "-"}\n\n` +
+          `이 정보로 입력하시겠습니까?`
+        );
+
+        if (ok) fillWorker(worker);
+      };
+
+      resultBox.appendChild(div);
+    });
+
+  } catch (err) {
+    showNotice("searchNotice", "err", "검색 중 오류가 발생했습니다. 배포 URL 또는 권한을 확인해주세요.");
+  }
+}
+
+function fillWorker(worker) {
+  document.getElementById("name").value = worker.name || "";
+  document.getElementById("phone").value = formatPhone(worker.phone || "");
+  document.getElementById("rrn").value = formatRRN(worker.rrn || "");
+  document.getElementById("bank").value = worker.bank || "";
+  document.getElementById("account").value = worker.account || "";
+
+  if (worker.lastJob) document.getElementById("job").value = worker.lastJob;
+  if (worker.lastAllowance) document.getElementById("allowance").value = worker.lastAllowance;
+
+  document.getElementById("resultBox").innerHTML = "";
+  showNotice("searchNotice", "ok", "기존 정보를 불러왔습니다. 날짜와 업무 내용을 확인 후 저장하세요.");
+}
+
+async function saveDailyWorker() {
+  clearNotice("saveNotice");
+
+  const btn = document.getElementById("saveBtn");
+  btn.disabled = true;
+  btn.textContent = "저장 중...";
+
+  const data = {
+    action: "saveDailyWorker",
+    date: val("date"),
+    store: val("store"),
+    name: val("name"),
+    allowance: val("allowance"),
+    job: val("job"),
+    rrn: formatRRN(val("rrn")),
+    bank: val("bank"),
+    account: val("account"),
+    phone: formatPhone(val("phone")),
+    memo: val("memo"),
+    payStatus: val("payStatus")
+  };
+
+  if (!data.name) {
+    showNotice("saveNotice", "err", "성함을 입력해주세요.");
+    resetButton();
+    return;
+  }
+
+  if (!data.phone) {
+    showNotice("saveNotice", "err", "전화번호를 입력해주세요.");
+    resetButton();
+    return;
+  }
+
+  if (!data.rrn) {
+    showNotice("saveNotice", "err", "주민번호를 입력해주세요.");
+    resetButton();
+    return;
+  }
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+
+    if (json.success) {
+      showNotice("saveNotice", "ok", json.message || "저장되었습니다.");
+      loadUnpaidCount();
+      loadTodayCount();
+      loadRecentWorkers();
+    } else {
+      showNotice("saveNotice", "err", json.message || "저장에 실패했습니다.");
+    }
+  } catch (err) {
+    showNotice("saveNotice", "err", "저장 중 오류가 발생했습니다. 웹앱 배포 권한을 확인해주세요.");
+  }
+
+  resetButton();
+}
+
+function resetButton() {
+  const btn = document.getElementById("saveBtn");
+  btn.disabled = false;
+  btn.textContent = "저장하기";
+}
+
+function clearForm() {
+  selectedRowNumber = null;
+  document.getElementById("updateBtn").style.display = "none";
+  document.getElementById("saveBtn").style.display = "block";
+  document.getElementById("keyword").value = "";
+  document.getElementById("resultBox").innerHTML = "";
+  clearNotice("searchNotice");
+  clearNotice("saveNotice");
+
+  const today = new Date();
+  document.getElementById("date").value = today.toISOString().slice(0, 10);
+  document.getElementById("store").value = "효종갱 파주점";
+  document.getElementById("name").value = "";
+  document.getElementById("allowance").value = "";
+  document.getElementById("job").value = "";
+  document.getElementById("rrn").value = "";
+  document.getElementById("bank").value = "";
+  document.getElementById("phone").value = "";
+  document.getElementById("account").value = "";
+  document.getElementById("memo").value = "";
+  document.getElementById("payStatus").value = "미지급";
+}
+
+async function loadUnpaidCount(){
+  try{
+    const res = await fetch(API_URL + "?action=getDailyUnpaidCount&t=" + Date.now());
+    const data = await res.json();
+    document.getElementById("unpaidCount").textContent = Number(data.count || 0);
+  }catch(e){
+    console.log(e);
+  }
+}
+
+async function loadTodayCount(){
+  try{
+    const res = await fetch(API_URL + "?action=getTodayDailyWorkerCount&t=" + Date.now());
+    const data = await res.json();
+    document.getElementById("todayCount").textContent = Number(data.count || 0);
+  }catch(e){
+    console.log(e);
+  }
+}
+
+async function loadRecentWorkers() {
+  const box = document.getElementById("workerList");
+  const btn = document.getElementById("searchListBtn");
+  const startDate = val("listStartDate");
+  const endDate = val("listEndDate");
+
+  box.textContent = "불러오는 중...";
+  btn.disabled = true;
+  btn.textContent = "검색 중...";
+
+  try {
+    let url = API_URL + "?action=getDailyWorkerList";
+    if (startDate) url += "&startDate=" + encodeURIComponent(startDate);
+    if (endDate) url += "&endDate=" + encodeURIComponent(endDate);
+
+    const res = await fetch(url);
+    const json = await res.json();
+    const list = json.data || [];
+
+    if (!json.success) {
+      box.textContent = json.message || "불러오기에 실패했습니다.";
+      return;
+    }
+
+    if (!list.length) {
+      box.textContent = "해당 기간의 입력 내역이 없습니다.";
+      return;
+    }
+
+    window.workerCache = list;
+    box.innerHTML = list.map(item => `
+      <div class="result-item">
+        <strong>${item.name || "-"} / ${formatPhone(item.phone || "")}</strong>
+        <p>
+          날짜: ${item.date || "-"}<br>
+          수당: ${item.allowance || "-"} / 업무: ${item.job || "-"}<br>
+          지급상태: ${item.payStatus || "-"}
+        </p>
+        <button class="btn btn-dark" type="button" onclick="editWorker(${item.rowNumber})">수정</button>
+      </div>
+    `).join("");
+  } catch (err) {
+    box.textContent = "목록 조회 중 오류가 발생했습니다.";
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "기간 검색";
+  }
+}
+
+function editWorker(rowNumber) {
+  const item = (window.workerCache || []).find(x => x.rowNumber === rowNumber);
+  if (!item) return;
+
+  selectedRowNumber = rowNumber;
+  document.getElementById("date").value = item.date || "";
+  document.getElementById("store").value = "효종갱 파주점";
+  document.getElementById("name").value = item.name || "";
+  document.getElementById("allowance").value = item.allowance || "";
+  document.getElementById("job").value = item.job || "";
+  document.getElementById("rrn").value = formatRRN(item.rrn || "");
+  document.getElementById("bank").value = item.bank || "";
+  document.getElementById("phone").value = formatPhone(item.phone || "");
+  document.getElementById("account").value = item.account || "";
+  document.getElementById("memo").value = item.memo || "";
+  document.getElementById("payStatus").value = item.payStatus || "미지급";
+  document.getElementById("saveBtn").style.display = "none";
+  document.getElementById("updateBtn").style.display = "block";
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+async function updateDailyWorker() {
+  if (!selectedRowNumber) {
+    showNotice("saveNotice", "err", "수정할 내역을 먼저 선택해주세요.");
+    return;
+  }
+
+  const data = {
+    action: "updateDailyWorker",
+    rowNumber: selectedRowNumber,
+    date: val("date"),
+    store: "효종갱 파주점",
+    name: val("name"),
+    allowance: val("allowance"),
+    job: val("job"),
+    rrn: formatRRN(val("rrn")),
+    bank: val("bank"),
+    account: val("account"),
+    phone: formatPhone(val("phone")),
+    memo: val("memo"),
+    payStatus: val("payStatus")
+  };
+
+  if (!data.name || !data.phone) {
+    showNotice("saveNotice", "err", "성함과 전화번호를 입력해주세요.");
+    return;
+  }
+
+  const btn = document.getElementById("updateBtn");
+  btn.disabled = true;
+  btn.textContent = "수정 중...";
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+    const json = await res.json();
+
+    if (!json.success) {
+      showNotice("saveNotice", "err", json.message || "수정에 실패했습니다.");
+      return;
+    }
+
+    showNotice("saveNotice", "ok", json.message || "수정되었습니다.");
+    selectedRowNumber = null;
+    btn.style.display = "none";
+    document.getElementById("saveBtn").style.display = "block";
+    loadRecentWorkers();
+    loadUnpaidCount();
+    loadTodayCount();
+  } catch (err) {
+    showNotice("saveNotice", "err", "수정 중 오류가 발생했습니다.");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "수정 저장";
+  }
+}
+</script>
+
+</body>
+</html>
