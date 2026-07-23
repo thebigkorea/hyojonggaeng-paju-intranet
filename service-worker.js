@@ -1,8 +1,11 @@
-const CACHE_NAME = "hyojonggaeng-paju-intranet-v1";
+const CACHE_NAME = "hyojonggaeng-paju-intranet-v2";
 
 const APP_FILES = [
   "./",
   "./index.html",
+  "./store-manager.html",
+  "./store-manager.css",
+  "./store-manager.js",
   "./manifest.json",
   "./images/hero-hyojonggaeng.png"
 ];
