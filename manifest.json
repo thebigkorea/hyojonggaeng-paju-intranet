@@ -1,0 +1,9 @@
+{
+  "name": "효종갱 파주점 업무포털",
+  "short_name": "효종갱 파주점",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f0e8",
+  "theme_color": "#3f2819",
+  "description": "효종갱 파주점 내부 업무용 인트라넷"
+}

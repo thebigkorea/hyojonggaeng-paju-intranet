@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>효종갱 파주점 업무포털</title>
+  <meta name="theme-color" content="#3f2819">
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #f5f0e8;
+      color: #24170f;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans KR",
+        Arial,
+        sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(1168px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -.04em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .nav-button {
+      padding: 12px 22px;
+      border-radius: 999px;
+      background: #8b5827;
+      color: #fff;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 540px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      border-radius: 30px;
+      background:
+        linear-gradient(
+          90deg,
+          rgba(25, 14, 8, .82) 0%,
+          rgba(25, 14, 8, .54) 38%,
+          rgba(25, 14, 8, .08) 72%
+        ),
+        url("images/hero-hyojonggaeng.png")
+        center / cover no-repeat;
+      box-shadow: 0 18px 42px rgba(52, 32, 16, .2);
+    }
+
+    .hero-text {
+      position: relative;
+      z-index: 1;
+      max-width: 650px;
+      padding: 60px 70px;
+      color: #fff;
+    }
+
+    .eyebrow {
+      margin-bottom: 18px;
+      color: #efbd70;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: .28em;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(38px, 5vw, 62px);
+      line-height: 1.12;
+      letter-spacing: -.065em;
+    }
+
+    .hero p {
+      margin: 24px 0 0;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.8;
+      word-break: keep-all;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 36px;
+    }
+
+    .card {
+      padding: 32px;
+      border: 1px solid #e7dac8;
+      border-radius: 28px;
+      background: #fffaf2;
+      box-shadow: 0 12px 30px rgba(52, 32, 16, .09);
+    }
+
+    .icon {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      color: #fff;
+      font-size: 27px;
+    }
+
+    .gold { background: #c28a3c; }
+    .blue { background: #126e8e; }
+    .green { background: #157758; }
+    .red { background: #cc5252; }
+    .dark { background: #444950; }
+
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 28px;
+      letter-spacing: -.05em;
+    }
+
+    .card p {
+      min-height: 72px;
+      margin: 0 0 25px;
+      color: #746659;
+      font-size: 15px;
+      line-height: 1.75;
+      word-break: keep-all;
+    }
+
+    .button {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      border: 0;
+      border-radius: 15px;
+      background: #8b5827;
+      color: #fff;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .button.sub {
+      margin-top: 11px;
+      background: #f0e5d5;
+      color: #2b1b10;
+    }
+
+    .button.pending {
+      background: #d7cdc0;
+      color: #6f6256;
+    }
+
+    .notice {
+      margin-top: 34px;
+      padding: 20px 24px;
+      border: 1px solid #ead6b5;
+      border-radius: 18px;
+      background: #fff7e8;
+      color: #604323;
+      font-size: 14px;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 38px;
+      color: #77695d;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 850px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero-text {
+        padding: 50px 36px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        width: min(100% - 24px, 1168px);
+        padding-top: 14px;
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .hero {
+        min-height: 430px;
+        border-radius: 24px;
+        background:
+          linear-gradient(
+            rgba(25, 14, 8, .66),
+            rgba(25, 14, 8, .66)
+          ),
+          url("images/hero-hyojonggaeng.png")
+          62% center / cover no-repeat;
+      }
+
+      .hero-text {
+        padding: 34px 26px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 17px;
+        margin-top: 20px;
+      }
+
+      .card {
+        padding: 25px;
+      }
+
+      .card p {
+        min-height: 0;
+      }
+
+      footer {
+        display: block;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <nav class="nav">
+      <div class="logo">효종갱</div>
+
+      <div class="nav-links">
+        <a href="index.html">홈</a>
+        <a href="#work">업무게시판</a>
+        <a href="#work">일일보고</a>
+        <a class="nav-button" href="#work">업무포털 바로가기</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-text">
+        <div class="eyebrow">HYOJONGGAENG · PAJU</div>
+
+        <h1>
+          전통의 깊이를 담은<br>
+          효종갱 파주점 업무포털
+        </h1>
+
+        <p>
+          일일보고, 영업실적보고서, 출퇴근관리, 일용직 근무내역,
+          직원정보 입력, 연월차 신청을 한 곳에서 실행하는
+          파주점 전용 인트라넷입니다.
+        </p>
+      </div>
+    </header>
+
+    <main id="work" class="grid">
+      <article class="card">
+        <div class="icon gold">📋</div>
+        <h2>일일보고·매장점검</h2>
+        <p>
+          일일보고, 직원관리, 고객관리, 설비관리,
+          위생점검과 컴플레인을 기록합니다.
+        </p>
+        <button class="button pending" onclick="showPreparing()">일일보고 입력</button>
+        <button class="button sub pending" onclick="showPreparing()">원장 조회</button>
+      </article>
+
+      <article class="card">
+        <div class="icon blue">📊</div>
+        <h2>영업실적보고서</h2>
+        <p>
+          효종갱 파주점 영업실적보고서를 입력하고
+          매출과 운영 실적을 관리합니다.
+        </p>
+        <button class="button pending" onclick="showPreparing()">영업실적 입력</button>
+        <button class="button sub pending" onclick="showPreparing()">보고서 조회</button>
+      </article>
+
+      <article class="card">
+        <div class="icon green">⏱️</div>
+        <h2>출퇴근관리</h2>
+        <p>
+          직원 출근·퇴근 등록과 관리자 근태 조회를
+          효종갱 파주점 기준으로 실행합니다.
+        </p>
+        <button class="button pending" onclick="showPreparing()">출퇴근 등록</button>
+        <button class="button sub pending" onclick="showPreparing()">관리자 조회</button>
+      </article>
+
+      <article class="card">
+        <div class="icon red">👷</div>
+        <h2>일용직 근무내역</h2>
+        <p>
+          일용직 근무내역을 입력하고 급여 지급 및
+          미지급 내역을 확인합니다.
+        </p>
+        <button class="button pending" onclick="showPreparing()">근무내역 입력</button>
+        <button class="button sub pending" onclick="showPreparing()">원장 조회</button>
+      </article>
+
+      <article class="card">
+        <div class="icon dark">👤</div>
+        <h2>직원정보 입력</h2>
+        <p>
+          효종갱 파주점 직원정보를 입력하고
+          더큰코리아 본사 통합 HR에 함께 반영합니다.
+        </p>
+        <button class="button pending" onclick="showPreparing()">직원정보 입력</button>
+        <button class="button sub pending" onclick="showPreparing()">파주 직원정보 조회</button>
+      </article>
+
+      <article class="card">
+        <div class="icon green">🌿</div>
+        <h2>연월차 신청</h2>
+        <p>
+          직원 연월차 신청과 관리자 승인 화면으로
+          이동하여 처리합니다.
+        </p>
+        <button class="button pending" onclick="showPreparing()">연월차 신청</button>
+        <button class="button sub pending" onclick="showPreparing()">관리자 승인</button>
+      </article>
+    </main>
+
+    <div class="notice">
+      ※ 이 페이지는 효종갱 파주 프리미엄 아울렛점 내부 업무용 인트라넷입니다.
+    </div>
+
+    <footer>
+      <div>
+        <strong>효종갱 파주점 업무포털</strong><br>
+        내부 직원 업무용 인트라넷입니다.
+      </div>
+
+      <div>© 효종갱 파주점. All rights reserved.</div>
+    </footer>
+  </div>
+
+  <script>
+    function showPreparing() {
+      alert("효종갱 파주점 전용 업무 시스템 연결 준비 중입니다.");
+    }
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function() {
+        navigator.serviceWorker.register("./service-worker.js");
+      });
+    }
+  </script>
+</body>
+</html>
